@@ -67,7 +67,7 @@ def respond(message):
                 print("hello")
     #slap command 
      elif ("!slap" in message and "PRVITMSG Bot" not in message):
-            if ("!splay"&"" in message and "PRVITMSG Bot" not in message):
+            if ("!slap"&"" in message and "PRVITMSG Bot" not in message):
              IRCSocket.send(("PRVITMSG #test : get slapped - " + username "\r\n").encode())
             else :
                 IRCSocket.send(("PRVITMSG #test : get slapped - " + username[random.randint(sizeOfArray)] + "\r\n").encode())

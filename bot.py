@@ -7,7 +7,7 @@
 import socket, string,  random # will need the random for the respose prt  
 
 #server details
-SERVER = "server"
+SERVER = "Localhost"
 PORT = 6667
 CHANNEL = "" 
 NICK = ""

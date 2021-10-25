@@ -2,12 +2,12 @@ import socket
 import threading
 import os
 
-HOST = "127.0.0.1"
+HOST = "::1"
 PORT = 6667
 
 nickname = input("Enter a nickname: ")
 
-user = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+user = socket.socket(socket.AF_INET6, socket.SOCK_STREAM)
 user.connect((HOST,PORT))
 
 def receiveFromServer():

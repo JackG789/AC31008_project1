@@ -2,16 +2,15 @@
 # -*- coding: utf-8 -*-
 
 
-#importing the socket and string and random and argparse python librarys
-import socket,string, random,argparse # will need the random for the respose prt  
+#importing the socket and string and random python librarys
+import socket,string, random # will need the random for the respose prt  
 
 #server details
-SERVER = "10.0.42.17"
+SERVER = "::1"
 PORT = 6667
 CHANNEL = "#test" #default channel test 
-BOTNICK = "Bot"
 
-IRCSocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+IRCSocket = socket.socket(socket.AF_INET6, socket.SOCK_STREAM)
 
   #set up the array of random words to send
 arrayWords = [
@@ -21,23 +20,6 @@ arrayWords = [
             "Proin mollis volutpat tincidunt. Nullam euismod mi eu nulla placerat, sit amet aliquet dolor porttitor"
         ]
        
-#parsing commands
-parser =argparse.ArgumentParser(description='bot command parameters')
-parser.add_argument("--hostname",type=str ,help="enter the server you wish the bot to connect to",required=False)
-parser.add_argument("--port",type=int,help="enter the port you wish the bot to connect though",required=False)
-parser.add_argument("--name",type=str ,help="enter what you wish the bot to be called",required=False)
-parser.add_argument("--channel",type=str ,help="enter the channel you wish the bot to join ",required=False)
-
-args = parser.parse_args()
-if args.hostname:
-    SERVER = args.hostname
-if args.port:
-    PORT = str(args.port)
-if args.name:
-    BOTNICK = args.name
-if args.channel:
-    CHANNEL = args.channel
-
 def connect():
     try:
         IRCSocket.connect((SERVER, PORT))
@@ -48,18 +30,22 @@ def connect():
         print("connected")
 # send the server the bots usernames and nickname 
 def login():
-    IRCSocket.send(("USER " + BOTNICK+ " networkbot  server :Bot\r\n").encode())
-    IRCSocket.send(("NICK " + BOTNICK + " \r\n").encode())
-    print ("logged in as Bot")
+    IRCSocket.send("USER Bot networkbot server :Bot".encode('utf-8'))
+
+    resp = IRCSocket.recv(1024).decode('utf-8')
+
+    IRCSocket.send("NICK Bot".encode('utf-8'))
+    
+    resp = IRCSocket.recv(1024).decode('utf-8')
     
 # join channel test
 def join():
-    IRCSocket.send(("JOIN "+ CHANNEL + "\r\n").encode())
-    print ("joined "+CHANNEL+ "channel")
+    IRCSocket.send("JOIN #test\r\n".encode('utf-8'))
+    print ("joined #test channel")
 
 #Respond to ping
 def ping():
-    IRCSocket.send("PONG :pingisn\r\n".encode())
+    IRCSocket.send("PONG :pingisn\r\n".encode('utf-8'))
     print("PONGED")
 
 def listen():
@@ -68,7 +54,8 @@ def listen():
         buffer = IRCSocket.recv(1024)
         message = buffer.decode()
 
-        
+        print(message)
+
         if("PING :" in message):
             ping()
 
@@ -85,21 +72,14 @@ def respond(message):
     #define the end of the usernames indide of the command msg
     end = '!'
     #number of usernames in the server
-    
-    
+    #len(usernames) = sizeOfArray
+    sizeOfArray = 4
 
 
     #find who sends the message and put it into variable usernames 
     
 
     usernames = message[message.find(start)+len(start):message.find(end)]
-    
-    #count the people in the channel
-    #IRCSocket.send(("!count\r\n").encode)
-    #if (int in message and "PRVITMSG Bot" not in message):
-       # sizeOfArray = message  
-
-    sizeOfArray=4 #couldnet get the count working for how many people in the channel so sets to 4
 
     #hello cammand 
     if ("!hello" in message and "PRVITMSG Bot" not in message):

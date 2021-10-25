@@ -41,16 +41,16 @@ class Channel:
         for u in self.users:
             if u != user:
                 sendMessage(m, u) 
-
+#Class to define user object
 class User:
     def __init__(self, socket, addr, name):
         self.socket = socket
         self.address = addr
         self.nickname = name
-
+#initialise default channels
 channels = [Channel("test"), Channel("channel2")] 
 awaitingPrivate = []
-
+#listen and accept clients onto the server
 def connectUser(s):
     s.listen()
     while True:
@@ -79,7 +79,8 @@ def connectUser(s):
 
         thread = handleClient(user)
         thread.start()
-
+        
+#print available channels 
 def listChannels():
     msg = "\nplease select a channel to join:"
     for channel in channels:
@@ -87,6 +88,7 @@ def listChannels():
     msg = msg + '\n' 
     return msg
 
+#print commands
 def listUserCommands():
     msg = "---------User Commands------------"
     msg = msg + "\n!help - show this list"
@@ -99,6 +101,7 @@ def listUserCommands():
     msg = msg + "\n!exit - disconnect from server\n"
     return msg
 
+#send message to users in a channel
 def sendMessage(msg, user):
     try:
         user.socket.send(msg.encode('utf-8'))
@@ -111,7 +114,7 @@ def sendMessage(msg, user):
                     c.leave(user)
         exit()
 
-
+#
 def safePipe(user):
     try:
         return user.socket.recv(1024).decode('utf-8')
@@ -124,6 +127,7 @@ def safePipe(user):
                     c.leave(user)
         exit()
 
+#allow users to choose channel to join        
 def pickChannel(user):
     while(True):
             sendMessage(listChannels(), user)
@@ -139,6 +143,7 @@ def pickChannel(user):
                 
             sendMessage("\nPlease enter a valid channel name\n", user)
 
+#allow users to send requests to chat privately
 def privateRequest(user):
     sendMessage("Which user would you like to chat provately to?", user)
     msg = safePipe(user)
@@ -177,7 +182,7 @@ def privateRequest(user):
         else:
             sendMessage(f'user {recip.nickname} not yet accepted private chat. Type !stop to exit')
         
-
+#allows user to accept request
 def privateAccept(user, msg):
     recip = None
     recipNickname = msg[8:]
@@ -205,6 +210,7 @@ def privateAccept(user, msg):
         else:
             sendMessage(f'|Private| {user.nickname}: {msg}', recip)
 
+#allows users to decline request
 def privateDecline(user, msg):
     recip = None
     recipNickname = msg[8:]
@@ -221,11 +227,12 @@ def privateDecline(user, msg):
     sendMessage(f'user {user.nickname} has declined to private chat', recip)
     awaitingPrivate.remove(pair)
 
+#class to define client object
 class handleClient(threading.Thread):
     def __init__(self, user):
         threading.Thread.__init__(self)
         self.user = user
-
+    
     def run(self):
         global channels 
         global awaitingPrivate

@@ -9,7 +9,7 @@ import socket,string, random,argparse # will need the random for the respose prt
 SERVER = "10.0.42.17"
 PORT = 6667
 CHANNEL = "#test" #default channel test 
-botName = "Bot"
+BOTNICK = "Bot"
 
 IRCSocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
@@ -23,10 +23,20 @@ arrayWords = [
        
 #parsing commands
 parser =argparse.ArgumentParser(description='bot command parameters')
-parser.add_argument("--hostname",help="enter the server you wish the bot to connect to",required=False,default=SERVER)
-parser.add_argument("--port",type=int,help="enter the port you wish the bot to connect though",required=False,default=PORT)
-parser.add_argument("--name",help="enter what you wish the bot to be called",required=False,default=botName)
-parser.add_argument("--channel",help="enter the channel you wish the bot to join ",required=False,default=CHANNEL)
+parser.add_argument("--hostname",type=str ,help="enter the server you wish the bot to connect to",required=False)
+parser.add_argument("--port",type=int,help="enter the port you wish the bot to connect though",required=False)
+parser.add_argument("--name",type=str ,help="enter what you wish the bot to be called",required=False)
+parser.add_argument("--channel",type=str ,help="enter the channel you wish the bot to join ",required=False)
+
+args = parser.parse_args()
+if args.hostname:
+    SERVER = args.hostname
+if args.port:
+    PORT = str(args.port)
+if args.name:
+    BOTNICK = args.name
+if args.channel:
+    CHANNEL = args.channel
 
 def connect():
     try:
@@ -38,13 +48,13 @@ def connect():
         print("connected")
 # send the server the bots usernames and nickname 
 def login():
-    IRCSocket.send("USER "+ botName +" "+botName + " server :Bot\r\n".encode())
-    IRCSocket.send("NICK" + botName + " \r\n".encode())
+    IRCSocket.send(("USER " + BOTNICK+ " networkbot  server :Bot\r\n").encode())
+    IRCSocket.send(("NICK " + BOTNICK + " \r\n").encode())
     print ("logged in as Bot")
     
 # join channel test
 def join():
-    IRCSocket.send("JOIN "+ CHANNEL + "\r\n".encode())
+    IRCSocket.send(("JOIN "+ CHANNEL + "\r\n").encode())
     print ("joined "+CHANNEL+ "channel")
 
 #Respond to ping
@@ -84,10 +94,12 @@ def respond(message):
 
     usernames = message[message.find(start)+len(start):message.find(end)]
     
-    
-    IRCSocket.send(("!count\r\n").encode)
-    if (int in message and "PRVITMSG Bot" not in message):
-        sizeOfArray = message  
+    #count the people in the channel
+    #IRCSocket.send(("!count\r\n").encode)
+    #if (int in message and "PRVITMSG Bot" not in message):
+       # sizeOfArray = message  
+
+    sizeOfArray=4 #couldnet get the count working for how many people in the channel so sets to 4
 
     #hello cammand 
     if ("!hello" in message and "PRVITMSG Bot" not in message):

@@ -1,10 +1,10 @@
 import socket
 import threading
 
-HOST = "127.0.0.1"
+HOST = "::1"
 PORT = 6667
 #socket initialistion
-s = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
+s = socket.socket(socket.AF_INET6,socket.SOCK_STREAM)
 
 try:
     s.bind((HOST,PORT))

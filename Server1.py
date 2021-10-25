@@ -41,15 +41,19 @@ class Channel:
         for u in self.users:
             if u != user:
                 sendMessage(m, u) 
+                
 #Class to define user object
 class User:
+    #initialise user attributes
     def __init__(self, socket, addr, name):
         self.socket = socket
         self.address = addr
         self.nickname = name
+        
 #initialise default channels
 channels = [Channel("test"), Channel("channel2")] 
 awaitingPrivate = []
+
 #listen and accept clients onto the server
 def connectUser(s):
     s.listen()
@@ -114,7 +118,7 @@ def sendMessage(msg, user):
                     c.leave(user)
         exit()
 
-#
+
 def safePipe(user):
     try:
         return user.socket.recv(1024).decode('utf-8')

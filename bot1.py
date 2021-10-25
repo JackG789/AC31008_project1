@@ -2,13 +2,14 @@
 # -*- coding: utf-8 -*-
 
 
-#importing the socket and string and random python librarys
-import socket,string, random # will need the random for the respose prt  
+#importing the socket and string and random and argparse python librarys
+import socket,string, random,argparse # will need the random for the respose prt  
 
 #server details
 SERVER = "10.0.42.17"
 PORT = 6667
 CHANNEL = "#test" #default channel test 
+botName = "Bot"
 
 IRCSocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
@@ -20,6 +21,13 @@ arrayWords = [
             "Proin mollis volutpat tincidunt. Nullam euismod mi eu nulla placerat, sit amet aliquet dolor porttitor"
         ]
        
+#parsing commands
+parser =argparse.ArgumentParser(description='bot command parameters')
+parser.add_argument("--hostname",help="enter the server you wish the bot to connect to",required=False,default=SERVER)
+parser.add_argument("--port",type=int,help="enter the port you wish the bot to connect though",required=False,default=PORT)
+parser.add_argument("--name",help="enter what you wish the bot to be called",required=False,default=botName)
+parser.add_argument("--channel",help="enter the channel you wish the bot to join ",required=False,default=CHANNEL)
+
 def connect():
     try:
         IRCSocket.connect((SERVER, PORT))
@@ -30,14 +38,14 @@ def connect():
         print("connected")
 # send the server the bots usernames and nickname 
 def login():
-    IRCSocket.send("USER Bot networkbot server :Bot\r\n".encode())
-    IRCSocket.send("NICK Bot\r\n".encode())
+    IRCSocket.send("USER "+ botName +" "+botName + " server :Bot\r\n".encode())
+    IRCSocket.send("NICK" + botName + " \r\n".encode())
     print ("logged in as Bot")
     
 # join channel test
 def join():
-    IRCSocket.send("JOIN #test\r\n".encode())
-    print ("joined #test channel")
+    IRCSocket.send("JOIN "+ CHANNEL + "\r\n".encode())
+    print ("joined "+CHANNEL+ "channel")
 
 #Respond to ping
 def ping():
@@ -67,14 +75,19 @@ def respond(message):
     #define the end of the usernames indide of the command msg
     end = '!'
     #number of usernames in the server
-    #len(usernames) = sizeOfArray
-    sizeOfArray = 4
+    
+    
 
 
     #find who sends the message and put it into variable usernames 
     
 
     usernames = message[message.find(start)+len(start):message.find(end)]
+    
+    
+    IRCSocket.send(("!count\r\n").encode)
+    if (int in message and "PRVITMSG Bot" not in message):
+        sizeOfArray = message  
 
     #hello cammand 
     if ("!hello" in message and "PRVITMSG Bot" not in message):

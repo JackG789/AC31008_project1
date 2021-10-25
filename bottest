@@ -23,20 +23,20 @@ arrayWords = [
        
 #parsing commands
 parser =argparse.ArgumentParser(description='bot command parameters')
-parser.add_argument("--hostname",type=str ,help="enter the server you wish the bot to connect to",required=False,default=SERVER)
-parser.add_argument("--port",type=int,help="enter the port you wish the bot to connect though",required=False,default=PORT)
-parser.add_argument("--name",type=str ,help="enter what you wish the bot to be called",required=False,default=BOTNICK)
-parser.add_argument("--channel",type=str ,help="enter the channel you wish the bot to join ",required=False,default=CHANNEL)
+parser.add_argument("--hostname",type=str ,help="enter the server you wish the bot to connect to",required=False)
+parser.add_argument("--port",type=int,help="enter the port you wish the bot to connect though",required=False)
+parser.add_argument("--name",type=str ,help="enter what you wish the bot to be called",required=False)
+parser.add_argument("--channel",type=str ,help="enter the channel you wish the bot to join ",required=False)
 
 args = parser.parse_args()
-if args.SERVER:
-    SERVER = args.SERVER
-if args.PORT:
-    PORT = str(args.PORT)
-if args.BOTNICK:
-    BOTNICK = args.BOTNAME
-if args.CHANNEL:
-    CHANNEL = args.CHANNEL
+if args.hostname:
+    SERVER = args.hostname
+if args.port:
+    PORT = str(args.port)
+if args.name:
+    BOTNICK = args.name
+if args.channel:
+    CHANNEL = args.channel
 
 def connect():
     try:
@@ -48,14 +48,13 @@ def connect():
         print("connected")
 # send the server the bots usernames and nickname 
 def login():
-    IRCSocket.send(bytes("USER "+BOTNICK+" networkbot  server :Bot\r\n".encode()))
-    IRCSocket.send(bytes("NICK" + BOTNICK + " \r\n".encode()))
-    IRCSocket.recv(2048+"\r\n".encode)
+    IRCSocket.send(("USER " + BOTNICK+ " networkbot  server :Bot\r\n").encode())
+    IRCSocket.send(("NICK " + BOTNICK + " \r\n").encode())
     print ("logged in as Bot")
     
 # join channel test
 def join():
-    IRCSocket.send("JOIN "+ CHANNEL + "\r\n".encode())
+    IRCSocket.send(("JOIN "+ CHANNEL + "\r\n").encode())
     print ("joined "+CHANNEL+ "channel")
 
 #Respond to ping
@@ -123,4 +122,3 @@ connect()
 login()
 join()
 listen()
-

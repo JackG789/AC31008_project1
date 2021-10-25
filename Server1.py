@@ -14,21 +14,26 @@ except:
 
 print(f'listening on port {str(PORT)}....')
 
+#Class to define channel object
 class Channel:
+    #initialise object attributes
     def __init__(self, name):
         self.name = name
         self.users = []
 
+    #add user to the list of users within the channel and message all users letting them know they have joined
     def join(self, user):
         self.users.append(user)
         for u in self.users:
             sendMessage(f'user {user.nickname} has joined the chat', u)
 
+    #remove user from list of users and message all users letting them know they have left
     def leave(self, user):
         self.users.remove(user)
         for u in self.users:
             sendMessage(f'user {user.nickname} has left the channel', u)
 
+    #message all users in the channel
     def messageChannel(self, user, message):
         if message == "":
             return
@@ -43,7 +48,7 @@ class User:
         self.address = addr
         self.nickname = name
 
-channels = [Channel("channel1"), Channel("channel2")] 
+channels = [Channel("test"), Channel("channel2")] 
 awaitingPrivate = []
 
 def connectUser(s):
@@ -89,6 +94,7 @@ def listUserCommands():
     msg = msg + "\n!leave - leave channel"
     msg = msg + "\n!list - list nickames on current channel"
     msg = msg + "\n!listall - list nicknames of all users on the server"
+    msg = msg + "\n!count - count number of users in the current channel"
     msg = msg + "\n!private - private message a user"
     msg = msg + "\n!exit - disconnect from server\n"
     return msg
@@ -245,6 +251,12 @@ class handleClient(threading.Thread):
                 for c in channels:
                     for u in c.users:
                         sendMessage(f'{u.nickname}\n', self.user)
+            elif msg == "!count":
+                i = 0
+                for c in channels:
+                    for u in c.users:
+                        i += 1
+                sendMessage(str(i), self.user)
             elif msg == "!private":
                 privateRequest(self.user)
             elif "!accept" in msg:

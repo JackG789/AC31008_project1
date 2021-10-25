@@ -3,7 +3,7 @@ import threading
 
 HOST = "::1"
 PORT = 6667
-#socket initialistion
+#socket initialisation
 s = socket.socket(socket.AF_INET6,socket.SOCK_STREAM)
 
 try:
@@ -149,7 +149,7 @@ def pickChannel(user):
 
 #allow users to send requests to chat privately
 def privateRequest(user):
-    sendMessage("Which user would you like to chat provately to?", user)
+    sendMessage("Which user would you like to chat privately to?", user)
     msg = safePipe(user)
     recip = None
     valid = False
